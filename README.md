@@ -59,9 +59,9 @@ numpy, matplotlib, cartopy, scipy, scikit-learn, colormaps (`intergration.ipynb`
 
 ## 注意点 (既知の問題)
 
-コードセルは出力との対応を保つため変更していません。以下は実データで確認してください。
+以下は実データで確認してください (修正済みと書いた項目を除き、コードセルは変更していません)。
 
-* `forecast_test.ipynb` の「1000validationの保存」セルで、外側ループと内側ループが同じ変数 `i` を使っています。そのため `validation_output[i, :]` は常に最後の行 (`mode_fin - 1`) にしか書き込まれず、他の行は `np.empty` の未初期化値のままです。保存済みの `seed1_mode*.npy` と、それを使う評価結果は見直しが必要な可能性があります。内側ループの変数名を例えば `m` に変えれば意図通りになります。
+* (修正済み) `forecast_test.ipynb` の「1000validationの保存」セルで、外側ループと内側ループが同じ変数 `i` を使っていたため、`validation_output[i, :]` が常に最後の行 (`mode_fin - 1`) にしか書き込まれず、他の行は `np.empty` の未初期化値のままでした。内側ループの変数名を `m` に変えて修正しました。修正前に保存した `seed1_mode*.npy` と `_norm.pickle`、およびそれを使う評価結果は作り直してください。
 * `svd_modes.ipynb` の内挿実験で SST 側の reshape が `40*165` と固定値になっています。`train_int`, `train_fin`, `training_period` を変えると PRCP 側 (`(train_fin-train_int)*abs(training_period)`) と食い違います。
 * `forecast_test.ipynb` と `svd_modes.ipynb` の `mask` は陸域を 0 で埋めるため、`latlon_to_X` の NaN 判定では陸域格子が除外されず、0 のまま行列に含まれます (`main.ipynb` は NaN で埋めるので除外されます)。
 * `evaluation/intergration.ipynb` の `bimodal_dist` では2つ目の正規分布にも `gmm.weights_[0]` を掛けています (`weights_[1]` の意図かもしれません)。
